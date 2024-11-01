@@ -21,7 +21,6 @@ RUN apt-get -y autoremove && \
     useradd -m -c "Kali Linux" -s /bin/bash -d /home/kali kali && \
     sed -i "s/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/g" /etc/ssh/sshd_config && \
     sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/g" /etc/ssh/sshd_config && \
-    sed -i "s/off/remote/g" /usr/share/novnc/app/ui.js && \
     echo "kali ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     mkdir /var/run/sshd && \
     ssh-keygen -A
