@@ -1,6 +1,6 @@
 FROM kalilinux/kali-rolling:latest
-LABEL maintainer="admin@csalab.id"
-RUN sed -i "s/http.kali.org/mirrors.ocf.berkeley.edu/g" /etc/apt/sources.list && \
+
+RUN sed -i "s/http.kali.org/mirror.twds.com.tw/g" /etc/apt/sources.list && \
     apt-get update && \
     apt-get -y upgrade
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
@@ -8,20 +8,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
     openssh-server \
     python2 \
     dialog \
-    firefox-esr \
     inetutils-ping \
     htop \
     nano \
-    net-tools \
-    tigervnc-standalone-server \
-    tigervnc-xorg-extension \
-    tigervnc-viewer \
-    novnc \
-    dbus-x11
+    net-tools 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-    xfce4-goodies \
-    kali-linux-large \
-    kali-desktop-xfce && \
+    kali-linux-headless \
     apt-get -y full-upgrade
 RUN apt-get -y autoremove && \
     apt-get clean all && \
@@ -29,12 +21,15 @@ RUN apt-get -y autoremove && \
     useradd -m -c "Kali Linux" -s /bin/bash -d /home/kali kali && \
     sed -i "s/#ListenAddress 0.0.0.0/ListenAddress 0.0.0.0/g" /etc/ssh/sshd_config && \
     sed -i "s/off/remote/g" /usr/share/novnc/app/ui.js && \
+    sed -i "s/#PasswordAuthentication yes/PasswordAuthentication yes/g" /etc/ssh/sshd_config && \
+    sed -i "s/off/remote/g" /usr/share/novnc/app/ui.js && \
     echo "kali ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-    touch /usr/share/novnc/index.htm
-COPY startup.sh /startup.sh
+    mkdir /var/run/sshd && \
+    ssh-keygen -A
 USER kali
 WORKDIR /home/kali
 ENV PASSWORD=kalilinux
 ENV SHELL=/bin/bash
-EXPOSE 8080
-ENTRYPOINT ["/bin/bash", "/startup.sh"]
+
+EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]
