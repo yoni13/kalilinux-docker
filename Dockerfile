@@ -13,7 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
     nano \
     net-tools 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-    kali-linux-headless \
+    kali-linux-headless && \
     apt-get -y full-upgrade
 RUN apt-get -y autoremove && \
     apt-get clean all && \
